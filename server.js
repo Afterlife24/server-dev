@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 let db;
 let client;
 
-const uri = "mongodb+srv://Dhanush2002:Dhanush2002@cluster0.kozns.mongodb.net/Dhanush2002?retryWrites=true&w=majority";
+const uri = "mongodb+srv://Dhanush2002:Dhanush2002@cluster0.ool5p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 async function connectToMongo() {
