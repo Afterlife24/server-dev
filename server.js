@@ -8,7 +8,11 @@ const app = express();
 var nm = require('nodemailer');
 let savedOTPS = {};
 
-
+const corsOptions = {
+    origin: ['https://dev-scanme.gofastapi.com', 'https://dev-client.gofastapi.com'], // Replace with actual frontends
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(cors());
 app.use(bodyParser.json());
