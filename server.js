@@ -664,6 +664,17 @@ app.post("/reserveTable", async (req, res) => {
     }
 });
 
+// Get reservations from the database
+app.get("/getReservations", async (req, res) => {
+    try {
+        const db = await getDatabase();
+        const reservations = await db.collection('reservations').find({}).toArray();
+        res.status(200).json({ reservations });
+    } catch (error) {
+        res.status(500).json({ error: "Error: " + error.message });
+    }
+});
+
 // Server-Sent Events route for orders
 app.get('/streamOrders', async (req, res) => {
     try {
