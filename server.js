@@ -601,12 +601,64 @@ app.get("/getOrders", async (req, res) => {
     }
 });
 
-// Get reservations from the database
-app.get("/getReservations", async (req, res) => {
+
+app.post("/reserveTable", async (req, res) => {
     try {
+        console.log("1");
         const db = await getDatabase();
-        const reservations = await db.collection('reservations').find({}).toArray();
-        res.status(200).json({ reservations });
+        const { name, phone, date, time, persons, email } = req.body;
+
+        const reservation = {
+            name,
+            phone,
+            date,
+            time,
+            persons,
+            email,
+            createdAt: new Date(),
+        };
+
+        const result = await db.collection('reservations').insertOne(reservation);
+        console.log("2");
+        console.log(email);
+        // Email configuration
+        var options = {
+    from: 'youremail@gmail.com',
+    to: email, // Use email from req.body
+    subject: "Table Reservation Confirmation",
+    html: `
+        <h1>Table Reservation Confirmation</h1>
+        <p>Dear ${name},</p>
+        <p>We are delighted to confirm your table reservation at our restaurant. Here are the details of your booking:</p>
+        <ul>
+            <li><strong>Date:</strong> ${date}</li>
+            <li><strong>Time:</strong> ${time}</li>
+        </ul>
+        <p>We look forward to hosting you and ensuring you have a wonderful dining experience. If you have any special requests or need to make changes to your reservation, please feel free to contact us.</p>
+        <p>Warm regards,</p>
+        <p><strong>[Your Restaurant Name]</strong></p>
+        <img src='cid:food' alt='Table Reserved' width='1000px'>
+    `,
+    attachments: [
+        {
+            filename: 'food.jpeg',
+            path: "https://restaurant.eatapp.co/hubfs/reserved-1.webp",
+            cid: 'food'
+        }
+    ]
+};
+
+        console.log("3");
+        // Send the email
+        transporter.sendMail(options, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Email sent: " + info.response);
+            }
+        });
+        console.log("4");
+        res.status(200).json({ message: "Reservation saved successfully", id: result.insertedId });
     } catch (error) {
         res.status(500).json({ error: "Error: " + error.message });
     }
